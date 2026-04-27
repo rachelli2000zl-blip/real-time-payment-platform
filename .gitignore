@@ -6,4 +6,8 @@ target/
 dist/
 build/
 .idea/
-.vscode/
+.vscode/.tmp/
+*.log
+target/
+node_modules/
+.env
