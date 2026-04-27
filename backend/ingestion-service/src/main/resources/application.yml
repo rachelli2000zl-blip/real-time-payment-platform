@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: ingestion-service
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:true}
+    locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration}
+    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/dataplatform}
+    user: ${SPRING_FLYWAY_USER:dataplatform}
+    password: ${SPRING_FLYWAY_PASSWORD:dataplatform}
 
 management:
   endpoints:
@@ -12,6 +18,10 @@ management:
         include: health,info,prometheus
 
 app:
+  s3:
+    enabled: ${S3_ENABLED:false}
+  kinesis:
+    enabled: ${KINESIS_ENABLED:false}
   aws:
     region: ${AWS_REGION:us-east-1}
     endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}

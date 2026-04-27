@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.kinesis.KinesisClient;
+import software.amazon.awssdk.services.kinesis.KinesisClientBuilder;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 
 import java.net.URI;
 
@@ -18,7 +20,7 @@ public class AwsClientConfig {
 
     @Bean
     public S3Client s3Client(IngestionProperties properties) {
-        S3Client.Builder builder = S3Client.builder()
+        S3ClientBuilder builder = S3Client.builder()
                 .region(Region.of(properties.aws().region()))
                 .credentialsProvider(DefaultCredentialsProvider.create());
 
@@ -31,7 +33,7 @@ public class AwsClientConfig {
 
     @Bean
     public KinesisClient kinesisClient(IngestionProperties properties) {
-        KinesisClient.Builder builder = KinesisClient.builder()
+        KinesisClientBuilder builder = KinesisClient.builder()
                 .region(Region.of(properties.aws().region()))
                 .credentialsProvider(DefaultCredentialsProvider.create());
 

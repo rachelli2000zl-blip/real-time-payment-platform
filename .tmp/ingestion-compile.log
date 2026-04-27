@@ -1,0 +1,23 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------< com.example.dataplatform:ingestion-service >-------------
+[INFO] Building ingestion-service 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ ingestion-service ---
+[INFO] Deleting /Users/rachelgreen/Desktop/RealTimePaymentPanelProject/backend/ingestion-service/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ingestion-service ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ ingestion-service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 7 source files with javac [debug parameters release 21] to target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.753 s
+[INFO] Finished at: 2026-04-27T15:56:12+10:00
+[INFO] ------------------------------------------------------------------------

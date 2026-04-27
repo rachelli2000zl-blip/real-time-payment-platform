@@ -51,14 +51,26 @@ public class IngestionService {
             String enrichedJson = objectMapper.writeValueAsString(enriched);
             PaymentEvent event = objectMapper.treeToValue(enriched, PaymentEvent.class);
 
-            dataLakeWriter.writeRaw(event, enrichedJson);
+            if (isS3WriteEnabled()) {
+                dataLakeWriter.writeRaw(event, enrichedJson);
+            } else {
+                LOGGER.info("Skipping S3 raw write because app.s3.enabled=false requestId={} eventId={}",
+                        requestId,
+                        event.eventId());
+            }
 
-            PutRecordRequest putRecordRequest = PutRecordRequest.builder()
-                    .streamName(properties.aws().kinesisStreamName())
-                    .partitionKey(event.customerId())
-                    .data(SdkBytes.fromUtf8String(enrichedJson))
-                    .build();
-            kinesisClient.putRecord(putRecordRequest);
+            if (isKinesisPublishEnabled()) {
+                PutRecordRequest putRecordRequest = PutRecordRequest.builder()
+                        .streamName(properties.aws().kinesisStreamName())
+                        .partitionKey(event.customerId())
+                        .data(SdkBytes.fromUtf8String(enrichedJson))
+                        .build();
+                kinesisClient.putRecord(putRecordRequest);
+            } else {
+                LOGGER.info("Skipping Kinesis publish because app.kinesis.enabled=false requestId={} eventId={}",
+                        requestId,
+                        event.eventId());
+            }
 
             LOGGER.info("event_ingested requestId={} eventId={} eventType={} customerId={}",
                     requestId,
@@ -66,7 +78,16 @@ public class IngestionService {
                     event.eventType(),
                     event.customerId());
         } catch (Exception exception) {
+            LOGGER.error("Failed to ingest event", exception);
             throw new IllegalStateException("Failed to ingest event", exception);
         }
+    }
+
+    private boolean isS3WriteEnabled() {
+        return properties.s3() != null && properties.s3().enabled();
+    }
+
+    private boolean isKinesisPublishEnabled() {
+        return properties.kinesis() != null && properties.kinesis().enabled();
     }
 }

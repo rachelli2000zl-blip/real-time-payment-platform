@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.SqsClientBuilder;
 
 import java.net.URI;
 
@@ -14,7 +16,7 @@ public class AwsConfig {
 
     @Bean
     public SqsClient sqsClient(RetryWorkerProperties properties) {
-        SqsClient.Builder builder = SqsClient.builder()
+        SqsClientBuilder builder = SqsClient.builder()
                 .region(Region.of(properties.getAws().getRegion()))
                 .credentialsProvider(DefaultCredentialsProvider.create());
 
@@ -27,7 +29,7 @@ public class AwsConfig {
 
     @Bean
     public S3Client s3Client(RetryWorkerProperties properties) {
-        S3Client.Builder builder = S3Client.builder()
+        S3ClientBuilder builder = S3Client.builder()
                 .region(Region.of(properties.getAws().getRegion()))
                 .credentialsProvider(DefaultCredentialsProvider.create());
 

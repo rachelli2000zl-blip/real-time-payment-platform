@@ -5,7 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app")
 public record IngestionProperties(
         Aws aws,
-        Schema schema
+        Schema schema,
+        S3 s3,
+        Kinesis kinesis
 ) {
     public record Aws(
             String region,
@@ -16,5 +18,11 @@ public record IngestionProperties(
     }
 
     public record Schema(String path) {
+    }
+
+    public record S3(boolean enabled) {
+    }
+
+    public record Kinesis(boolean enabled) {
     }
 }
