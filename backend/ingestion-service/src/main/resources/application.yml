@@ -1,0 +1,21 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: ingestion-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+app:
+  aws:
+    region: ${AWS_REGION:us-east-1}
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}
+    kinesis-stream-name: ${KINESIS_STREAM_NAME:payment-events-stream}
+    data-lake-bucket: ${DATA_LAKE_BUCKET:data-platform-lake}
+  schema:
+    path: ${SCHEMA_PATH:shared/schemas/payment/v1.json}

@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: retry-worker
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/dataplatform}
+    username: ${DB_USERNAME:dataplatform}
+    password: ${DB_PASSWORD:dataplatform}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  aws:
+    region: ${AWS_REGION:us-east-1}
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}
+    retry-queue-url: ${RETRY_QUEUE_URL:}
+    dlq-queue-url: ${DLQ_QUEUE_URL:}
+    data-lake-bucket: ${DATA_LAKE_BUCKET:data-platform-lake}
+  worker:
+    poll-interval-ms: ${RETRY_POLL_INTERVAL_MS:4000}
+    max-messages-per-poll: ${RETRY_MAX_MESSAGES:10}
+  processing:
+    max-attempts: ${MAX_ATTEMPTS:5}
+  schema:
+    path: ${SCHEMA_PATH:shared/schemas/payment/v1.json}

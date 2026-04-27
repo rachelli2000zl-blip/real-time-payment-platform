@@ -1,0 +1,42 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_TAG: latest
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21
+      nodejs: 20
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR
+      - aws --version
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+  build:
+    commands:
+      - mvn test
+      - mvn -DskipTests package
+      - docker build -f backend/ingestion-service/Dockerfile -t "$INGESTION_REPO_URI:$IMAGE_TAG" .
+      - docker build -f backend/control-plane-service/Dockerfile -t "$CONTROL_REPO_URI:$IMAGE_TAG" .
+      - docker build -f backend/consumer-service/Dockerfile -t "$CONSUMER_REPO_URI:$IMAGE_TAG" .
+      - docker build -f backend/retry-worker/Dockerfile -t "$RETRY_REPO_URI:$IMAGE_TAG" .
+  post_build:
+    commands:
+      - docker push "$INGESTION_REPO_URI:$IMAGE_TAG"
+      - docker push "$CONTROL_REPO_URI:$IMAGE_TAG"
+      - docker push "$CONSUMER_REPO_URI:$IMAGE_TAG"
+      - docker push "$RETRY_REPO_URI:$IMAGE_TAG"
+      - printf '[{"name":"IngestionContainer","imageUri":"%s"}]' "$INGESTION_REPO_URI:$IMAGE_TAG" > ingestion-imagedefinitions.json
+      - printf '[{"name":"ControlContainer","imageUri":"%s"}]' "$CONTROL_REPO_URI:$IMAGE_TAG" > control-imagedefinitions.json
+      - printf '[{"name":"ConsumerContainer","imageUri":"%s"}]' "$CONSUMER_REPO_URI:$IMAGE_TAG" > consumer-imagedefinitions.json
+      - printf '[{"name":"RetryContainer","imageUri":"%s"}]' "$RETRY_REPO_URI:$IMAGE_TAG" > retry-imagedefinitions.json
+
+artifacts:
+  files:
+    - ingestion-imagedefinitions.json
+    - control-imagedefinitions.json
+    - consumer-imagedefinitions.json
+    - retry-imagedefinitions.json

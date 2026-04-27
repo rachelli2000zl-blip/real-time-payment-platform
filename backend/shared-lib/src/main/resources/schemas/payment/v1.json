@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/payment/v1.json",
+  "title": "Payment Event v1",
+  "type": "object",
+  "required": [
+    "eventId",
+    "eventType",
+    "occurredAt",
+    "customerId",
+    "amount",
+    "currency",
+    "schemaVersion",
+    "metadata"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "payment.created",
+        "payment.failed",
+        "refund.created"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "customerId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "requestId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "receivedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
